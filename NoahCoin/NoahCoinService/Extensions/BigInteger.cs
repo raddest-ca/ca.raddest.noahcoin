@@ -8,6 +8,12 @@ public static class BigIntegerExtensions
         return BigInteger.Pow(a, exp);
     }
 
+    public static BigInteger Mod(this BigInteger self, BigInteger mod)
+    {
+        var remainder = self % mod;
+        return remainder < 0 ? remainder + mod : remainder;
+    }
+
     public static BigInteger ParseHex(this string input)
     {
         return BigInteger.Parse(input, System.Globalization.NumberStyles.HexNumber);
@@ -15,8 +21,9 @@ public static class BigIntegerExtensions
 
     public static BigInteger ModInverse(this BigInteger n, BigInteger p)
     {
+        if (n < 0) return p - ModInverse(-n, p);
         var result = BigIntegerHelpers.ExtendedEuclideanAlgorithm(n, p);
-        return result.X % p;
+        return result.X.Mod(p);
     }
 }
 
