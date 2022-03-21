@@ -11,7 +11,7 @@ public class BigIntegerTests
     }
 
     [Theory]
-    [ClassData(typeof(Range100))]
+    [ClassData(typeof(ModTestRange))]
     public void ModInverseMany(BigInteger i)
     {
         BigInteger p = 17;
