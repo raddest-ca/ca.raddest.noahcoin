@@ -1,7 +1,6 @@
+namespace NoahCoin.Tests;
 
-namespace NoahCoinService.Tests;
-
-public class SecretKeyTests
+public class KeyTests
 {
     [Fact]
     public void VerifyPublicKeys()

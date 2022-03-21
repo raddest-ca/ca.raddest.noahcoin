@@ -1,4 +1,4 @@
-namespace NoahCoinService.Tests;
+namespace NoahCoin.Tests;
 
 public class PointTests
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace NoahCoinService.Tests;
+namespace NoahCoin.Tests;
 
 public class GeneratorTestsS
 {

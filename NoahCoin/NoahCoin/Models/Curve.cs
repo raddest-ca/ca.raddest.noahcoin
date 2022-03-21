@@ -1,4 +1,4 @@
-namespace NoahCoinService.Models;
+namespace NoahCoin.Models;
 
 public record Curve(
     BigInteger p,

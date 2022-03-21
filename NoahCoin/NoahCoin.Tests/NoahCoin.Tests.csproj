@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NoahCoinService\NoahCoinService.csproj" />
+    <ProjectReference Include="..\NoahCoin\NoahCoin.csproj" />
   </ItemGroup>
 
 </Project>

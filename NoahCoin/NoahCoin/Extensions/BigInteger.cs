@@ -1,4 +1,4 @@
-namespace NoahCoinService.Extensions;
+namespace NoahCoin.Extensions;
 using System.Numerics;
 
 public static class BigIntegerExtensions
@@ -21,7 +21,9 @@ public static class BigIntegerExtensions
 
     public static BigInteger ModInverse(this BigInteger n, BigInteger p)
     {
+        // https://asecuritysite.com/ecc/ecc_add
         if (n < 0) return p - ModInverse(-n, p);
+
         var result = BigIntegerHelpers.ExtendedEuclideanAlgorithm(n, p);
         return result.X.Mod(p);
     }

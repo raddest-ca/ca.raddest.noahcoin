@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NoahCoinService.Tests;
+namespace NoahCoin.Tests;
 
 public class ModTestRange: IEnumerable<object[]>
 {

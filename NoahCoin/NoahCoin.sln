@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoahCoinService", "NoahCoinService\NoahCoinService.csproj", "{96DA59B6-B84B-4D99-A5A5-8D79F2045C30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoahCoin", "NoahCoin\NoahCoin.csproj", "{96DA59B6-B84B-4D99-A5A5-8D79F2045C30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoahCoinService.Tests", "NoahCoinService.Tests\NoahCoinService.Tests.csproj", "{76B63B63-14B4-41B9-BD78-A07D9130635C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoahCoin.Tests", "NoahCoin.Tests\NoahCoin.Tests.csproj", "{76B63B63-14B4-41B9-BD78-A07D9130635C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
