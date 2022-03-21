@@ -1,6 +1,6 @@
 namespace NoahCoinService.Tests;
 
-public class BigNumberTests
+public class BigIntegerTests
 {
     [Fact]
     public void ModInverse()
