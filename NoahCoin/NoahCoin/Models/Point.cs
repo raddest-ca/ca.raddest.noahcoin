@@ -42,7 +42,7 @@ public record Point(
         return new Point(P.Curve, x3, y3);
     }
 
-    public static Point operator *(Point a, int b)
+    public static Point operator *(Point a, BigInteger b)
     {
         var result = Infinity;
         var append = a;
@@ -55,5 +55,5 @@ public record Point(
         return result;
     }
 
-    public static Point operator *(int a, Point b) => b * a;
+    public static Point operator *(BigInteger a, Point b) => b * a;
 }
