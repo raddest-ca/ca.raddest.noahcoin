@@ -2,7 +2,7 @@ using System;
 
 namespace NoahCoinService.Tests;
 
-public class GeneratorTest
+public class GeneratorTestsS
 {
     [Fact]
     public void GeneratorIsOnCurve()
