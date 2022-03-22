@@ -16,4 +16,9 @@ public static class ArrayExtensions
     {
         return Concat(new T[]{y}, x);
     }
+
+    public static T[] Append<T>(this T[] x, T y)
+    {
+        return Concat(x, new T[]{y});
+    }
 }

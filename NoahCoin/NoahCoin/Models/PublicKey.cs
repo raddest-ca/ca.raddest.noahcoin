@@ -4,6 +4,11 @@ namespace NoahCoin.Models;
 
 public record PublicKey : Point
 {
+    
+    public PublicKey(Point original) : base(original)
+    {
+    }
+
     public PublicKey(Curve Curve, BigInteger X, BigInteger Y) : base(Curve, X, Y)
     {
     }
@@ -19,11 +24,11 @@ public record PublicKey : Point
                 prefix = 0x02;
             else
                 prefix = 0x03;
-            pkb = X.ToByteArray().Prepend(prefix);
+            pkb = X.ToByteArray(32).Prepend(prefix);
         }
         else
         {
-            pkb = X.ToByteArray().Prepend((byte) 0x04).Concat(Y.ToByteArray());
+            pkb = X.ToByteArray(32).Prepend((byte) 0x04).Concat(Y.ToByteArray(32));
         }
 
         if (DoHash)
@@ -56,10 +61,11 @@ public record PublicKey : Point
     }
 
     private static readonly string Alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-    private string b58encode(byte[] bytes)
+
+    private static string b58encode(byte[] bytes)
     {
         if (bytes.Count() != 25) throw new ArgumentException(nameof(bytes), "Must be length 25");
-        BigInteger n = new BigInteger(bytes);
+        BigInteger n = new BigInteger(bytes, isUnsigned: true, isBigEndian: true);
         List<char> chars = new(){};
         while (n > 0)
         {
@@ -68,7 +74,7 @@ public record PublicKey : Point
         }
         chars.Reverse();
         var leadingZeroCount = bytes.TakeWhile(b => b == 0x0).Count();
-        var result = leadingZeroCount * Alphabet[0] + new string(chars.ToArray());
+        var result = Alphabet[0].ToString().Repeat(leadingZeroCount) + new string(chars.ToArray());
         return result;
     }
 }

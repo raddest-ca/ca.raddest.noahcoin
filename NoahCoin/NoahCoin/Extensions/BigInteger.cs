@@ -1,4 +1,6 @@
 namespace NoahCoin.Extensions;
+
+using System.Linq;
 using System.Numerics;
 
 public static class BigIntegerExtensions
@@ -26,6 +28,16 @@ public static class BigIntegerExtensions
 
         var result = BigIntegerHelpers.ExtendedEuclideanAlgorithm(n, p);
         return result.X.Mod(p);
+    }
+
+    public static byte[] ToByteArray(this BigInteger self, int length)
+    {
+        if (self < 0) throw new ArgumentException(nameof(self), "Must be positive");
+        // ditch sign bit, flip bit order
+        var x = self.ToByteArray(isBigEndian: true, isUnsigned: true);
+        var zerosToAdd = length - x.Count();
+        var rtn = new byte[zerosToAdd].Concat(x).ToArray();
+        return rtn;
     }
 }
 

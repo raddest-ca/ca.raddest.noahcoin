@@ -8,4 +8,11 @@ public static class StringExtensions
     {
         return Encoding.ASCII.GetBytes(self);
     }
+
+    public static string Repeat(this string self, int amount)
+    {
+        return new StringBuilder(self.Length * amount)
+            .Insert(0, self, amount)
+            .ToString();
+    }
 }

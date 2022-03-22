@@ -34,4 +34,23 @@ public class BigIntegerTests
         Assert.Equal(answer,result);
     }
 
+    [Fact]
+    public void PythonToBytesCompare1()
+    {
+        var x = new BigInteger(12);
+        var bytes = x.ToByteArray(32);
+        var hex = bytes.ToHexString();
+        var expected = "000000000000000000000000000000000000000000000000000000000000000C";
+        Assert.Equal(expected, hex);
+    }
+
+    [Fact]
+    public void PythonToBytesCompare2()
+    {
+        var x = BigInteger.Parse("83998262154709529558614902604110599582969848537757180553516367057821848015989");
+        var bytes = x.ToByteArray(32);
+        var hex = bytes.ToHexString();
+        var expected = "b9b554e25022c2ae549b0c30c18df0a8e0495223f627ae38df0992efb4779475".ToUpperInvariant();
+        Assert.Equal(expected, hex);
+    }
 }
