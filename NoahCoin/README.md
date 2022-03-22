@@ -14,3 +14,6 @@ https://github.com/andreacorbellini/ecc/blob/master/scripts/ecdsa.py
 
 https://www.youtube.com/watch?v=NTztut15D2E
 https://www.youtube.com/watch?v=u1VRbo_fhC8
+
+https://www.oreilly.com/library/view/programming-bitcoin/9781492031482/ch04.html
+https://www.oreilly.com/library/view/programming-bitcoin/9781492031482/
