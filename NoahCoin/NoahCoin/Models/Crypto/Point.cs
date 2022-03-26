@@ -1,4 +1,4 @@
-namespace NoahCoin.Models;
+namespace NoahCoin.Models.Crypto;
 
 public record Point(
     Curve Curve,

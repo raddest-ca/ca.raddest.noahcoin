@@ -1,4 +1,4 @@
-namespace NoahCoin.Models;
+namespace NoahCoin.Models.Blockchain;
 
 public record HashPointer<T> where T: IHashable
 {
