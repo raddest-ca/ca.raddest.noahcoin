@@ -104,4 +104,11 @@ public class KeyTests
         var param = new BigInteger(12).ToByteArray(25);
         var result = method!.Invoke(null, new[] { param });
     }
+
+    [Fact]
+    public void RandomNewKey()
+    {
+        var pk = new PrivateKey();
+        Assert.True(pk.IsValid);
+    }
 }

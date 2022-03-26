@@ -13,6 +13,15 @@ public record PrivateKey : IPrivateKey
         }
     }
 
+    public PrivateKey() {
+        Generator = Generator.Default;
+        var rng = RandomNumberGenerator.Create();
+        int bitsToGenerate = (int) Math.Ceiling(BigInteger.Log(Generator.Order, 2));
+        var data = new byte[bitsToGenerate];
+        rng.GetBytes(data);
+        Value = new BigInteger(data, isUnsigned: true, isBigEndian: true).Mod(Generator.Order);
+    }
+
     public PrivateKey(BigInteger Value)
     {
         this.Value = Value;
