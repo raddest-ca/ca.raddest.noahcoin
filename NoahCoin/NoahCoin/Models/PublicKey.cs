@@ -62,7 +62,7 @@ public record PublicKey : Point
 
     private static string b58encode(byte[] bytes)
     {
-        if (bytes.Count() != 25) throw new ArgumentException(nameof(bytes), "Must be length 25");
+        if (bytes.Length != 25) throw new ArgumentException(nameof(bytes), "Must be length 25");
         BigInteger n = new BigInteger(bytes, isUnsigned: true, isBigEndian: true);
         List<char> chars = new(){};
         while (n > 0)

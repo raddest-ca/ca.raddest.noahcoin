@@ -35,7 +35,7 @@ public static class BigIntegerExtensions
         if (self < 0) throw new ArgumentException(nameof(self), "Must be positive");
         // ditch sign bit, flip bit order
         var x = self.ToByteArray(isBigEndian: true, isUnsigned: true);
-        var zerosToAdd = length - x.Count();
+        var zerosToAdd = length - x.Length;
         var rtn = new byte[zerosToAdd].Concat(x).ToArray();
         return rtn;
     }

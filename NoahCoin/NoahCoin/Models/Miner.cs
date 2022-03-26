@@ -4,18 +4,21 @@ public class Miner
 {
     public int Difficulty { get; set; } = 1;
     public BigInteger Owner { get; init; }
-    public Block ActiveBlock { get; init; }
+    public Block ActiveBlock { get; set; }
 
     public Miner(BigInteger owner, BigInteger previousBlockId)
     {
         Owner = owner;
         ActiveBlock = new Block() {
-            PreviousBlock =  previousBlockId,
-            Transactions = new HashPointer<Transaction>[]{new(new (){
-                Sender = Owner,
-                Receiver = Owner,
-                Amount = new BigInteger(25)
-            })}
+            Header = new (){
+                IsGenesisBlock = true,
+                Transactions = new HashPointer<Transaction>[]{new(new (){
+                    Sender = Owner,
+                    Receiver = Owner,
+                    Amount = new BigInteger(25)
+                })},
+            },
+            Nonce = BigInteger.Zero,
         };
     }
 
@@ -24,7 +27,7 @@ public class Miner
         using var Hasher = SHA256.Create();
         while (!IsValid(ActiveBlock.Hash()))
         {
-            ActiveBlock.Nonce++;
+            ActiveBlock = ActiveBlock with {Nonce = ActiveBlock.Nonce+1};
         }
         return ActiveBlock;
     }

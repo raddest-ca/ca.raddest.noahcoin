@@ -7,19 +7,20 @@ public class BlockTests
     {
         Block a = new Block
         {
-            PreviousBlock = BigInteger.Zero,
-            Transactions = new HashPointer<Transaction>[] { new(new(){
-                Sender = BigInteger.One,
-                Receiver = new BigInteger(2),
-                Amount = new BigInteger(25)
-            })},
+            Header = new()
+            {
+                IsGenesisBlock = true,
+                Transactions = new HashPointer<Transaction>[] { new(new(){
+                    Sender = BigInteger.One,
+                    Receiver = new BigInteger(2),
+                    Amount = new BigInteger(25)
+                })},
+            },
         };
-        Block b = a with {PreviousBlock = a.PreviousBlock+1};
-        Block c = a with {Transactions = new HashPointer<Transaction>[] { }};
-        Block d = a with {};
+        Block b = a with { Header = a.Header with { Transactions = new HashPointer<Transaction>[] { } } };
+        Block c = a with { Header = a.Header, Nonce = a.Nonce };
         Assert.NotEqual(a.Hash(), b.Hash());
-        Assert.NotEqual(a.Hash(), c.Hash());
-        Assert.Equal(a.Hash(), d.Hash());
+        Assert.Equal(a.Hash(), c.Hash());
     }
 
     [Fact]
@@ -27,20 +28,23 @@ public class BlockTests
     {
         Block a = new Block
         {
-            PreviousBlock = BigInteger.Zero,
-            Transactions = new HashPointer<Transaction>[] { new(new (){
-                Sender = BigInteger.One,
-                Receiver = new BigInteger(2),
-                Amount = new BigInteger(25)
-            })},
+            Header = new(){
+                IsGenesisBlock = true,
+                Transactions = new HashPointer<Transaction>[] { new(new (){
+                    Sender = BigInteger.One,
+                    Receiver = new BigInteger(2),
+                    Amount = new BigInteger(25)
+                })},
+            }
         };
         Assert.True(a.IsValid);
-        var BadTransactionPointer = new HashPointer<Transaction>{
-            Reference = a.Transactions[0].Reference,
-            Hash = new byte[]{},
+        var BadTransactionPointer = new HashPointer<Transaction>
+        {
+            Reference = a.Header.Transactions[0].Reference,
+            Hash = new byte[] { },
         };
-        Assert.False(a.IsValid);
-        var BadBlock = a with {Transactions = new[]{BadTransactionPointer}};
+        Assert.False(BadTransactionPointer.IsValid);
+        var BadBlock = a with { Header = new() {Transactions = new[] { BadTransactionPointer } }};
         Assert.False(BadBlock.IsValid);
     }
 }

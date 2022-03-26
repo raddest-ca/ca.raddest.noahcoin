@@ -8,7 +8,8 @@ public class MinerTests
         Miner m = new Miner(BigInteger.Zero, BigInteger.Zero){
             Difficulty = 1
         };
-        Assert.Equal(0x0, m.MineBlock().Hash()[0]);
+        Block mined = m.MineBlock();
+        Assert.True(0x10 > mined.Hash()[0]);
     }
 
     [Fact]
@@ -16,7 +17,10 @@ public class MinerTests
     {
         Miner m = new Miner(BigInteger.Zero, BigInteger.Zero);
         Block b = m.MineBlock();
-        b.Nonce--; // if the previous block was valid, it should have been returned by the mine function instead
+        
+        // if the previous block was valid, it should have been returned by the mine function instead
+        b = b with {Nonce = b.Nonce - 1};
+        
         Assert.False(m.IsValid(b.Hash()));
     }
 

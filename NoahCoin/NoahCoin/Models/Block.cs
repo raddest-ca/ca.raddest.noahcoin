@@ -2,23 +2,11 @@ namespace NoahCoin.Models;
 
 public record Block : IHashable
 {
-
-    public BigInteger PreviousBlock {get; init;}
-    public HashPointer<Transaction>[] Transactions {get; init;}
-    public bool IsValid { get => Transactions.All(t => t.IsValid); }
-
-    public BigInteger Nonce {get; set; }
-
+    public BlockHeader Header {get; init;}
+    public BigInteger Nonce {get; init; } = BigInteger.Zero;
+    public bool IsValid {get => Header.IsValid; }
     public byte[] Hash()
     {
-        List<byte[]> ToHash = new();
-        ToHash.Add(PreviousBlock.ToByteArray(32));
-        foreach (var t in Transactions)
-        {
-            ToHash.Add(t.Hash);
-        }
-        ToHash.Add(Nonce.ToByteArray(32));
-        return IHashable.Hash(ToHash);
+        return IHashable.Hash(Header.Hash(), Nonce.ToByteArray(32));
     }
-
 }

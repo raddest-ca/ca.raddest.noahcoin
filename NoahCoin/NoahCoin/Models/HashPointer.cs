@@ -9,8 +9,9 @@ public record HashPointer<T> where T: IHashable
     {
         get
         {
+            if (Reference == null) return false;
             var actual = Reference.Hash();
-            if (actual.Count() != Hash.Count()) return false;
+            if (actual.Length != Hash.Length) return false;
             return actual.SequenceEqual(Hash);
         }
     }
