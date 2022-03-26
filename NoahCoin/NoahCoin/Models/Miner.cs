@@ -4,23 +4,21 @@ namespace NoahCoin;
 
 public class Miner
 {
-    public int Difficulty = 1;
+    public int Difficulty { get; set; } = 1;
     public BigInteger Owner { get; init; }
     public Block ActiveBlock { get; init; }
 
     public Miner(BigInteger owner, BigInteger previousBlockId)
     {
         Owner = owner;
-        ActiveBlock = new Block(
-            previousBlockId,
-            new Transaction[]{
-                new RewardTransaction(
-                    owner,
-                    new BigInteger(25)
-                )
-            },
-            BigInteger.Zero
-        );
+        ActiveBlock = new Block() {
+            PreviousBlock =  previousBlockId,
+            Transactions = new HashPointer<Transaction>[]{new(new (){
+                Sender = Owner,
+                Receiver = Owner,
+                Amount = new BigInteger(25)
+            })}
+        };
     }
 
     public Block MineBlock()

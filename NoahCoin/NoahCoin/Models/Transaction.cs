@@ -1,12 +1,18 @@
 namespace NoahCoin;
 
-public record Transaction(
-    BigInteger Sender,
-    BigInteger Receiver,
-    BigInteger Amount
-);
+public record Transaction : IHashable
+{
 
-public record RewardTransaction(
-    BigInteger Owner,
-    BigInteger Amount
-) : Transaction(Owner, Owner, Amount);
+    public BigInteger Sender {get; init;}
+    public BigInteger Receiver {get; init;}
+    public BigInteger Amount {get; init;}
+ 
+    public byte[] Hash()
+    {
+        return IHashable.Hash(
+            Sender.ToByteArray(),
+            Receiver.ToByteArray(),
+            Amount.ToByteArray()
+        );
+    }
+}
