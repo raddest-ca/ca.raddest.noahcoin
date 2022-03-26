@@ -1,17 +1,30 @@
 namespace NoahCoin.Models.Crypto;
 
-public record Point(
-    Curve Curve,
-    BigInteger X,
-    BigInteger Y
-)
+public record Point
 {
+    public BigInteger X { get; init; }
+    public BigInteger Y { get; init; }
+    public Curve Curve { get; init; }
+
+    public Point(){}
+    public Point (Curve Curve, BigInteger X, BigInteger Y)
+    {
+        this.Curve = Curve;
+        this.X = X;
+        this.Y = Y;
+    }
+
     public bool IsMember()
     {
         return (Y.Pow(2) - X.Pow(3) - 7).Mod(Curve.p) == 0;
     }
 
-    public static Point Infinity = new(new Curve(0, 0, 0), BigInteger.Zero, BigInteger.Zero);
+    public static Point Infinity = new()
+    {
+        Curve = new Curve(0, 0, 0),
+        X = BigInteger.Zero,
+        Y = BigInteger.Zero,
+    };
 
     public bool IsInfinity() => Object.ReferenceEquals(this, Infinity);
 
@@ -39,7 +52,12 @@ public record Point(
             slope = (3 * x1.Pow(2) + a) * (2 * y1).ModInverse(p);
         x3 = (slope.Pow(2) - x1 - x2).Mod(p);
         y3 = (slope * (x1 - x3) - y1).Mod(p);
-        return new Point(P.Curve, x3, y3);
+        return new Point()
+        {
+            Curve = P.Curve,
+            X = x3,
+            Y = y3,
+        };
     }
 
     public static Point operator *(Point a, BigInteger b)

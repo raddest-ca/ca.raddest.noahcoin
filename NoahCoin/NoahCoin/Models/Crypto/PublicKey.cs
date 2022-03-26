@@ -1,16 +1,8 @@
 namespace NoahCoin.Models.Crypto;
 
-public record PublicKey : Point
+public record PublicKey : IPublicKey
 {
-    
-    public PublicKey(Point original) : base(original)
-    {
-    }
-
-    public PublicKey(Curve Curve, BigInteger X, BigInteger Y) : base(Curve, X, Y)
-    {
-    }
-
+    public Point Point {get; init;}
     public byte[] Encode(bool Compressed, bool DoHash = false)
     {
         byte[] pkb;
@@ -18,15 +10,15 @@ public record PublicKey : Point
         {
             byte prefix;
             // avoiding ternary because value becomes an int instead of a byte lol
-            if (Y % 2 == 0)
+            if (Point.Y % 2 == 0)
                 prefix = 0x02;
             else
                 prefix = 0x03;
-            pkb = X.ToByteArray(32).Prepend(prefix);
+            pkb = Point.X.ToByteArray(32).Prepend(prefix);
         }
         else
         {
-            pkb = X.ToByteArray(32).Prepend((byte) 0x04).Concat(Y.ToByteArray(32));
+            pkb = Point.X.ToByteArray(32).Prepend((byte) 0x04).Concat(Point.Y.ToByteArray(32));
         }
 
         if (DoHash)
@@ -59,7 +51,6 @@ public record PublicKey : Point
     }
 
     private static readonly string Alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-
     private static string b58encode(byte[] bytes)
     {
         if (bytes.Length != 25) throw new ArgumentException(nameof(bytes), "Must be length 25");
