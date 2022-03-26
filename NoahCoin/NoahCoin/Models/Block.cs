@@ -1,5 +1,4 @@
-
-namespace NoahCoin;
+namespace NoahCoin.Models;
 
 public record Block : IHashable
 {

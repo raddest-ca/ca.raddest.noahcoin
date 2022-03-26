@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-
 namespace NoahCoin.Models;
 
 public record PublicKey : Point

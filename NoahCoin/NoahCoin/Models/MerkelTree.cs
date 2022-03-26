@@ -1,4 +1,5 @@
-namespace NoahCoin;
+namespace NoahCoin.Models;
+
 
 // WIP
 

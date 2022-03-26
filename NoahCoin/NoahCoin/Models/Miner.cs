@@ -1,6 +1,4 @@
-using System.Security.Cryptography;
-
-namespace NoahCoin;
+namespace NoahCoin.Models;
 
 public class Miner
 {
