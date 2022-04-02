@@ -1,49 +1,60 @@
 namespace NoahCoin.Models.Crypto;
 
-public record PrivateKey : IPrivateKey
+public record PrivateKey
 {
-    public Generator Generator {get; init;}
-    public BigInteger Value {get; init;}
+    public Generator Generator { get; init; }
+    public BigInteger Value { get; init; }
 
     public bool IsValid
     {
-        get
-        {
-            return Value > 0 && Value < Generator.Order;
-        }
+        get { return Value > 0 && Value < Generator.Order; }
     }
 
-    public PrivateKey() {
+    public PrivateKey()
+    {
         Generator = Generator.Default;
-        var rng = RandomNumberGenerator.Create();
-        int bitsToGenerate = (int) Math.Ceiling(BigInteger.Log(Generator.Order, 2));
-        var data = new byte[bitsToGenerate];
-        rng.GetBytes(data);
-        Value = new BigInteger(data, isUnsigned: true, isBigEndian: true).Mod(Generator.Order);
+        Value = CryptoUtil.GetSecureRandomNumber(Generator.Order);
     }
 
-    public PrivateKey(BigInteger Value)
+    public PrivateKey(
+        BigInteger Value
+    )
     {
         this.Value = Value;
         Generator = Generator.Default;
     }
-    public PrivateKey(string phrase)
+
+    public PrivateKey(
+        string phrase
+    )
     {
         Generator = Generator.Default;
-        Value = new BigInteger(
-            System.Text.Encoding.ASCII.GetBytes(phrase),
-            isUnsigned: true,
-            isBigEndian: true
-        );
+        Value = IHashable.GetHash(phrase).IntegerValue;
     }
 
-    public IPublicKey GetPublicKey()
+    public PublicKey GetPublicKey()
     {
         return Generator.GeneratePublicKey(this);
     }
 
-    public Signature Sign()
+    /**
+     * https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm#Signing_Algorithm
+     */
+    public Signature GetSignature(
+        Hash messageHash
+    )
     {
-        return null;
+        var z = messageHash.IntegerValue;
+        while (true)
+        {
+            var n = Generator.Order;
+            var k = CryptoUtil.GetSecureRandomNumber(n - 1) + 2;
+            var xy = k * Generator.Point;
+            var r = xy.X.Mod(n);
+            if (r == 0) continue;
+            var s = (k.ModInverse(n) * (z + r * Value)).Mod(n);
+            if (s == 0) continue;
+            return new Signature(new Point(Generator.Point.Curve, r, s));
+        }
     }
 }

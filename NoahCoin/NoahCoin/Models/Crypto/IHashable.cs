@@ -2,25 +2,25 @@ namespace NoahCoin.Models.Crypto;
 
 public interface IHashable
 {
-    Hash Hash();
+    Hash GetHash();
 
     /* Default hash implementation helpers */
 
-    public static Hash Hash(
+    public static Hash GetHash(
         params byte[][] content
     )
     {
-        return Hash((IEnumerable<byte[]>) content);
+        return GetHash((IEnumerable<byte[]>)content);
     }
 
-    public static Hash Hash(
+    public static Hash GetHash(
         params Hash[] hashes
     )
     {
-        return Hash(hashes.Select(h => h.Value));
+        return GetHash(hashes.Select(h => h.Value));
     }
 
-    public static Hash Hash(
+    public static Hash GetHash(
         IEnumerable<byte[]> content
     )
     {
@@ -29,14 +29,24 @@ public interface IHashable
         {
             hasher.AppendData(chunk);
         }
+
         return new Hash(hasher.GetHashAndReset());
     }
 
-    public static Hash Hash(
+    public static Hash GetHash(
         int content
     )
     {
         byte[] bytes = BitConverter.GetBytes(content);
-        return Hash(bytes);
+        return GetHash(bytes);
     }
+
+    static Hash GetHash(
+        string content
+    ) =>
+        GetHash(System.Text.Encoding.ASCII.GetBytes(content));
+
+    static Hash GetHash(
+        params BigInteger[] values
+    ) => GetHash(values.Select(v => v.ToByteArray(32)));
 }

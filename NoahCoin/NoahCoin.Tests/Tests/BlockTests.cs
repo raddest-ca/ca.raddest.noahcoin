@@ -19,8 +19,8 @@ public class BlockTests
         };
         Block b = a with { Header = a.Header with { Transactions = new HashPointer<Transaction>[] { } } };
         Block c = a with { Header = a.Header, Nonce = a.Nonce };
-        Assert.NotEqual(a.Hash(), b.Hash());
-        Assert.Equal(a.Hash(), c.Hash());
+        Assert.NotEqual(a.GetHash(), b.GetHash());
+        Assert.Equal(a.GetHash(), c.GetHash());
     }
 
     [Fact]

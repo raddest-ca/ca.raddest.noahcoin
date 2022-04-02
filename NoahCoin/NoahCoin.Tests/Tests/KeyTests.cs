@@ -53,6 +53,7 @@ public class KeyTests
     {
         var key = new PublicKey()
         {
+            Generator = Generator.Default,
             Point = new Point()
             {
                 Curve = Curve.bitcoin_curve,
@@ -83,6 +84,7 @@ public class KeyTests
         var publicKey = secretKey.GetPublicKey();
         var expectedPublicKey = new PublicKey()
         {
+            Generator = Generator.Default,
             Point = new Point()
             {
                 Curve = Curve.bitcoin_curve,

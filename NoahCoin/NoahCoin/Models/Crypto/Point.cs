@@ -1,6 +1,6 @@
 namespace NoahCoin.Models.Crypto;
 
-public record Point
+public record Point : IHashable
 {
     public BigInteger X { get; init; }
     public BigInteger Y { get; init; }
@@ -74,4 +74,6 @@ public record Point
     }
 
     public static Point operator *(BigInteger a, Point b) => b * a;
+
+    public Hash GetHash() => IHashable.GetHash(X, Y);
 }

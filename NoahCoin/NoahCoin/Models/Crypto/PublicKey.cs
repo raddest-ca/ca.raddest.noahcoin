@@ -1,8 +1,14 @@
 namespace NoahCoin.Models.Crypto;
 
-public record PublicKey : IPublicKey
+public record PublicKey
 {
+    public Generator Generator { get; init; }
     public Point Point {get; init;}
+
+    public PublicKey()
+    {
+    }
+
     public byte[] Encode(bool Compressed, bool DoHash = false)
     {
         byte[] pkb;

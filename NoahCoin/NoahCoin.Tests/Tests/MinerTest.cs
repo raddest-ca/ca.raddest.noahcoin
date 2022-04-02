@@ -9,7 +9,7 @@ public class MinerTests
             Difficulty = 1
         };
         Block mined = m.MineBlock();
-        Assert.True(0x10 > mined.Hash().Value[0]);
+        Assert.True(0x10 > mined.GetHash().Value[0]);
     }
 
     [Fact]
@@ -21,7 +21,7 @@ public class MinerTests
         // if the previous block was valid, it should have been returned by the mine function instead
         b = b with {Nonce = b.Nonce - 1};
         
-        Assert.False(m.IsValid(b.Hash()));
+        Assert.False(m.IsValid(b.GetHash()));
     }
 
     

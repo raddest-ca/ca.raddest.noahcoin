@@ -39,6 +39,11 @@ public static class BigIntegerExtensions
         var rtn = new byte[zerosToAdd].Concat(x).ToArray();
         return rtn;
     }
+
+    public static Hash GetHash(this BigInteger self)
+    {
+        return IHashable.GetHash(self);
+    }
 }
 
 public static class BigIntegerHelpers

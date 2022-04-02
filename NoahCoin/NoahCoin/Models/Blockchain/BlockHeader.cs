@@ -14,7 +14,7 @@ public record BlockHeader : IHashable
     }
 
 
-    public Hash Hash()
+    public Hash GetHash()
     {
         List<Hash> ToHash = new();
         if (!IsGenesisBlock) ToHash.Add(PreviousBlock.Hash);
@@ -22,7 +22,7 @@ public record BlockHeader : IHashable
         {
             ToHash.Add(t.Hash);
         }
-        return IHashable.Hash(ToHash.ToArray());
+        return IHashable.GetHash(ToHash.ToArray());
     }
 
 }

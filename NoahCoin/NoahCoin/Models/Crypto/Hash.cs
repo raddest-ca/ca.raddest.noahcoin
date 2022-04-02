@@ -1,6 +1,6 @@
 namespace NoahCoin.Models.Crypto;
 
-public record Hash
+public record Hash : IHashable
 {
     public byte[] Value {get; init;}
 
@@ -19,11 +19,8 @@ public record Hash
         Value = value;
     }
 
-    public Hash(BigInteger Value)
-    {
-        this.Value = Value.ToByteArray();
-    }
-    
+    public Hash(BigInteger value) => Value = IHashable.GetHash(value).Value;
+
     public override int GetHashCode()
     {
         return (int) IntegerValue.Mod(Int32.MaxValue);
@@ -33,14 +30,14 @@ public record Hash
         IHashable other
     )
     {
-        return IHashable.Hash(Value, other.Hash().Value);
+        return IHashable.GetHash(Value, other.GetHash().Value);
     }
 
     public Hash Concat(
         byte[] other
     )
     {
-        return IHashable.Hash(Value, other);
+        return IHashable.GetHash(Value, other);
     }
     public virtual bool Equals(
         Hash? other
@@ -51,5 +48,10 @@ public record Hash
         if (other.GetType() != GetType()) return false;
         if (Value.Length != other.Value.Length) return false;
         return Value.SequenceEqual(other.Value);
+    }
+
+    public Hash GetHash()
+    {
+        return this;
     }
 }

@@ -25,7 +25,7 @@ public class Miner
     public Block MineBlock()
     {
         using var Hasher = SHA256.Create();
-        while (!IsValid(ActiveBlock.Hash()))
+        while (!IsValid(ActiveBlock.GetHash()))
         {
             ActiveBlock = ActiveBlock with {Nonce = ActiveBlock.Nonce+1};
         }

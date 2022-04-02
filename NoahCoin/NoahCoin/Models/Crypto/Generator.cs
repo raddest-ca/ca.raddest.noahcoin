@@ -18,6 +18,7 @@ public record Generator
     {
         return new PublicKey()
         {
+            Generator = this,
             Point = pk.Value * Point
         };
     }
