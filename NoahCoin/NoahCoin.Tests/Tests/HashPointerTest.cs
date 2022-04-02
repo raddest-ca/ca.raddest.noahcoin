@@ -13,7 +13,7 @@ public class HashPointerTests
         };
         var p = new HashPointer<Transaction>(t);
         Assert.True(p.IsValid);
-        var pBad = p with {Hash = new byte[]{}};
+        var pBad = p with {Hash = new Hash(new byte[]{})};
         Assert.False(pBad.IsValid);
     }
 }

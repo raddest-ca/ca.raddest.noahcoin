@@ -41,7 +41,7 @@ public class BlockTests
         var BadTransactionPointer = new HashPointer<Transaction>
         {
             Reference = a.Header.Transactions[0].Reference,
-            Hash = new byte[] { },
+            Hash = new Hash(new byte[] { }),
         };
         Assert.False(BadTransactionPointer.IsValid);
         var BadBlock = a with { Header = new() {Transactions = new[] { BadTransactionPointer } }};

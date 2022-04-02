@@ -14,15 +14,15 @@ public record BlockHeader : IHashable
     }
 
 
-    public byte[] Hash()
+    public Hash Hash()
     {
-        List<byte[]> ToHash = new();
+        List<Hash> ToHash = new();
         if (!IsGenesisBlock) ToHash.Add(PreviousBlock.Hash);
         foreach (var t in Transactions)
         {
             ToHash.Add(t.Hash);
         }
-        return IHashable.Hash(ToHash);
+        return IHashable.Hash(ToHash.ToArray());
     }
 
 }

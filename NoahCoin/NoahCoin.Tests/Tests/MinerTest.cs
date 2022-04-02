@@ -9,7 +9,7 @@ public class MinerTests
             Difficulty = 1
         };
         Block mined = m.MineBlock();
-        Assert.True(0x10 > mined.Hash()[0]);
+        Assert.True(0x10 > mined.Hash().Value[0]);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class MinerTests
         Miner m = new Miner(BigInteger.Zero, BigInteger.Zero){
             Difficulty = 1
         };
-        Assert.False(m.IsValid(new byte[]{0x10, 0x00}));
+        Assert.False(m.IsValid(new Hash(new byte[]{0x10, 0x00})));
     }
     
     
@@ -41,7 +41,7 @@ public class MinerTests
         Miner m = new Miner(BigInteger.Zero, BigInteger.Zero){
             Difficulty = 2
         };
-        Assert.False(m.IsValid(new byte[]{0x01, 0x00}));
+        Assert.False(m.IsValid(new Hash(new byte[]{0x01, 0x00})));
     }
     
     [Fact]
@@ -50,6 +50,6 @@ public class MinerTests
         Miner m = new Miner(BigInteger.Zero, BigInteger.Zero){
             Difficulty = 2
         };
-        Assert.True(m.IsValid(new byte[]{0x00, 0x10}));
+        Assert.True(m.IsValid(new Hash(new byte[]{0x00, 0x10})));
     }
 }

@@ -5,8 +5,8 @@ public record Block : IHashable
     public BlockHeader Header {get; init;}
     public BigInteger Nonce {get; init; } = BigInteger.Zero;
     public bool IsValid {get => Header.IsValid; }
-    public byte[] Hash()
+    public Hash Hash()
     {
-        return IHashable.Hash(Header.Hash(), Nonce.ToByteArray(32));
+        return Header.Hash().Concat(Nonce.ToByteArray(32));
     }
 }

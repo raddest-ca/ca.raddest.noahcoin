@@ -32,10 +32,12 @@ public class Miner
         return ActiveBlock;
     }
 
-    public bool IsValid(byte[] hash)
+    public bool IsValid(
+        Hash hash
+    )
     {
         int zeroCount = 0;
-        foreach (var b in hash)
+        foreach (var b in hash.Value)
         {
             if (b == 0x0)
             {

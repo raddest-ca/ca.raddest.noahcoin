@@ -8,7 +8,7 @@ public record Transaction : IHashable
     public BigInteger Receiver {get; init;}
     public BigInteger Amount {get; init;}
  
-    public byte[] Hash()
+    public Hash Hash()
     {
         return IHashable.Hash(
             Sender.ToByteArray(),

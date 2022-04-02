@@ -41,4 +41,9 @@ public record PrivateKey : IPrivateKey
     {
         return Generator.GeneratePublicKey(this);
     }
+
+    public Signature Sign()
+    {
+        return null;
+    }
 }
