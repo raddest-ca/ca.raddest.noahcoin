@@ -32,12 +32,19 @@ public record Signature : IHashable
         if (Value.Curve != publicKey.Generator.Point.Curve) return false;
         var n = publicKey.Generator.Order;
         var z = message.GetHash().IntegerValue;
-        if (R <= 1 && R >= n - 1) return false;
-        if (S <= 1 && S >= n - 1) return false;
-        var u1 = (z * S.ModInverse(n)).ModInverse(n);
-        var u2 = (R * S.ModInverse(n)).ModInverse(n);
-        var xy = u1 * publicKey.Generator.Point + u2 * publicKey.Point;
-        if (xy.IsInfinity()) return false;
-        return R == xy.X.Mod(n);
+        var G = publicKey.Generator.Point;
+        if (R < 1 && R > n - 1) return false;
+        if (S < 1 && S > n - 1) return false;
+        var s1 = S.ModInverse(n);
+        var RPrime = (z * s1) * G + (R * s1) * publicKey.Point;
+        if (RPrime.IsInfinity()) return false;
+        var rPrime = RPrime.X;
+        return rPrime == R;
+        // var S1 = S.ModInverse(n);
+        // var u1 = (z * S1);
+        // var u2 = (R * S1);
+        // var xy = u1 * publicKey.Generator.Point + u2 * publicKey.Point;
+        // if (xy.IsInfinity()) return false;
+        // return R == xy.X.Mod(n);
     }
 }

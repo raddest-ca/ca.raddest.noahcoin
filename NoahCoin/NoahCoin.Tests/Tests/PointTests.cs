@@ -80,4 +80,11 @@ public class PointTests
         Point expected = new Point(curve, 13, 4);
         Assert.Equal(expected, point * 25);
     }
+
+    [Fact]
+    public void Commutative()
+    {
+        Point a = new Point(new Curve(17, 2, 3), 5, 11);
+        Assert.Equal(a*12, 12*a);
+    }
 }

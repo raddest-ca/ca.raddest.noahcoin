@@ -41,18 +41,19 @@ public record PrivateKey
      * https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm#Signing_Algorithm
      */
     public Signature GetSignature(
-        Hash messageHash
+        IHashable message
     )
     {
-        var z = messageHash.IntegerValue;
+        var z = message.GetHash().IntegerValue;
+        var n = Generator.Order;
         while (true)
         {
-            var n = Generator.Order;
-            var k = CryptoUtil.GetSecureRandomNumber(n - 1) + 2;
+            var k = CryptoUtil.GetSecureRandomNumber(n) + 1;
             var xy = k * Generator.Point;
-            var r = xy.X.Mod(n);
+            // var r = xy.X.Mod(n);
+            var r = xy.X;
             if (r == 0) continue;
-            var s = (k.ModInverse(n) * (z + r * Value)).Mod(n);
+            var s = (k.ModInverse(n) * (z + Value * r)).Mod(n);
             if (s == 0) continue;
             return new Signature(new Point(Generator.Point.Curve, r, s));
         }
