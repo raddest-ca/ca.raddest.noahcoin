@@ -1,6 +1,6 @@
 namespace NoahCoin.Models.Crypto;
 
-public record PublicKey
+public record PublicKey: IHashable
 {
     public Generator Generator { get; init; }
     public Point Point {get; init;}
@@ -71,5 +71,10 @@ public record PublicKey
         var leadingZeroCount = bytes.TakeWhile(b => b == 0x0).Count();
         var result = Alphabet[0].ToString().Repeat(leadingZeroCount) + new string(chars.ToArray());
         return result;
+    }
+
+    public Hash GetHash()
+    {
+        return IHashable.GetHash(Point);
     }
 }

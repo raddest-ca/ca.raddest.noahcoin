@@ -1,6 +1,6 @@
 namespace NoahCoin.Models.Crypto;
 
-public record PrivateKey
+public record PrivateKey: IHashable
 {
     public Generator Generator { get; init; }
     public BigInteger Value { get; init; }
@@ -57,5 +57,10 @@ public record PrivateKey
             if (s == 0) continue;
             return new Signature(new Point(Generator.Point.Curve, r, s));
         }
+    }
+
+    public Hash GetHash()
+    {
+        return IHashable.GetHash(Value);
     }
 }

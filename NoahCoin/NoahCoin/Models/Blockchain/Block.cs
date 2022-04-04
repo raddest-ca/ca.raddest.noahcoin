@@ -1,3 +1,5 @@
+using NoahCoin.Models.Datastructures;
+
 namespace NoahCoin.Models.Blockchain;
 
 public record Block : IHashable

@@ -1,3 +1,5 @@
+using NoahCoin.Models.Datastructures;
+
 namespace NoahCoin.Models.Blockchain;
 
 public record BlockHeader : IHashable
@@ -7,22 +9,14 @@ public record BlockHeader : IHashable
 
     public bool IsGenesisBlock { get; init; } = false;
 
-    public bool IsValid
-    {
-        get => (IsGenesisBlock || (PreviousBlock != null && PreviousBlock.IsValid))
-            && Transactions.All(t => t.IsValid);
-    }
+    public bool IsValid =>
+        (IsGenesisBlock || (PreviousBlock != null && PreviousBlock.IsValid))
+        && Transactions.All(t => t.IsValid);
 
-
-    public Hash GetHash()
-    {
-        List<Hash> ToHash = new();
-        if (!IsGenesisBlock) ToHash.Add(PreviousBlock.Hash);
-        foreach (var t in Transactions)
-        {
-            ToHash.Add(t.Hash);
-        }
-        return IHashable.GetHash(ToHash.ToArray());
-    }
-
+    public Hash GetHash() =>
+        IsGenesisBlock
+            ? IHashable.GetHash(Transactions)
+            : IHashable.GetHash(
+                ((IEnumerable<IHashable>)Transactions).Append(PreviousBlock)
+            );
 }

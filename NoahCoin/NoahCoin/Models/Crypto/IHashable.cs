@@ -4,22 +4,6 @@ public interface IHashable
 {
     Hash GetHash();
 
-    /* Default hash implementation helpers */
-
-    public static Hash GetHash(
-        params byte[][] content
-    )
-    {
-        return GetHash((IEnumerable<byte[]>)content);
-    }
-
-    public static Hash GetHash(
-        params Hash[] hashes
-    )
-    {
-        return GetHash(hashes.Select(h => h.Value));
-    }
-
     public static Hash GetHash(
         IEnumerable<byte[]> content
     )
@@ -32,14 +16,25 @@ public interface IHashable
 
         return new Hash(hasher.GetHashAndReset());
     }
+    
+    public static Hash GetHash(
+        params byte[][] content
+    ) =>
+        GetHash((IEnumerable<byte[]>)content);
 
     public static Hash GetHash(
+        params IHashable[] hashes
+    ) =>
+        GetHash(hashes.Select(h => h.GetHash().Value));
+
+    public static Hash GetHash(
+        IEnumerable<IHashable> objs
+    ) => GetHash(objs.Select(x => x.GetHash().Value));
+    
+    public static Hash GetHash(
         int content
-    )
-    {
-        byte[] bytes = BitConverter.GetBytes(content);
-        return GetHash(bytes);
-    }
+    ) =>
+        GetHash(BitConverter.GetBytes(content));
 
     static Hash GetHash(
         string content

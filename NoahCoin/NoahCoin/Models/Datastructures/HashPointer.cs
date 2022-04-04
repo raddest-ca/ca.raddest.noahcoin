@@ -1,6 +1,6 @@
-namespace NoahCoin.Models.Blockchain;
+namespace NoahCoin.Models.Datastructures;
 
-public record HashPointer<T> where T: IHashable
+public record HashPointer<T> : IHashable where T: IHashable
 {
     public T Reference {get; init;}
     public Hash Hash {get; init;}
@@ -11,5 +11,10 @@ public record HashPointer<T> where T: IHashable
     {
         Reference = reference;
         Hash = reference.GetHash();
+    }
+
+    public Hash GetHash()
+    {
+        return Hash;
     }
 }

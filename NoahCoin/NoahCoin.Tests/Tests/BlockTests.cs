@@ -1,3 +1,5 @@
+using NoahCoin.Models.Datastructures;
+
 namespace NoahCoin.Tests;
 
 public class BlockTests
