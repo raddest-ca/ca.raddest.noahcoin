@@ -11,8 +11,19 @@ public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
     public HashPointer<IHashable> Right { get; init; } =
         HashPointer<IHashable>.GetNullPointer<IHashable>();
 
+    private readonly int _count = 0;
+
+    public int Count => _count;
+    
     public MerkelTree()
     {
+    }
+
+    private MerkelTree(
+        int count
+    )
+    {
+        _count = count;
     }
 
     public MerkelTree Append(
@@ -23,40 +34,48 @@ public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
             this.Concat(new[] { value }).Where(x => !x.IsNull);
         List<MerkelTree> subtrees = new();
         {
-            HashPointer<IHashable> prev = null;
+            HashPointer<IHashable>? prev = null;
             foreach (var hashPointer in toJoin)
             {
                 if (prev == null)
                     prev = hashPointer;
                 else
                 {
-                    subtrees.Add(new() { Left = prev, Right = hashPointer });
+                    subtrees.Add(new(2) { Left = prev, Right = hashPointer });
                     prev = null;
                 }
             }
 
-            if (prev != null) subtrees.Add(new() { Left = prev });
+            if (prev != null) subtrees.Add(new(1) { Left = prev });
         }
         while (subtrees.Count > 1)
         {
             List<MerkelTree> next = new();
-            MerkelTree prev = null;
+            MerkelTree? prev = null;
             foreach (var tree in subtrees)
             {
                 if (prev == null)
                     prev = tree;
                 else
                 {
-                    next.Add(new() { Left = new(prev), Right = new(tree) });
+                    next.Add(new(prev.Count + tree.Count) { Left = new(prev), Right = new(tree) });
                     prev = null;
                 }
             }
 
-            if (prev != null) next.Add(new() { Left = new(prev) });
+            if (prev != null) next.Add(new(prev.Count) { Left = new(prev) });
             subtrees = next;
         }
 
         return subtrees[0];
+    }
+
+    public bool IsMember(
+        int index,
+        Hash hash
+    )
+    {
+        return false;
     }
 
     public Hash GetHash()

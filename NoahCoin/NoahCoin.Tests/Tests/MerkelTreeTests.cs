@@ -76,4 +76,17 @@ public class MerkelTreeTests
         };
         Assert.False(badTree.IsValid);
     }
+
+    [Fact]
+    public void Count()
+    {
+        var tree = new MerkelTree();
+        Assert.Equal(0, tree.Count);
+        int max = 10;
+        for (var i = 0; i < max; i++)
+        {
+            tree = tree.Append(new(new Hash()));
+            Assert.Equal(i+1, tree.Count);
+        }
+    }
 }
