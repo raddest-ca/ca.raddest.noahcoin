@@ -4,7 +4,7 @@ public record Point : IHashable
 {
     public BigInteger X { get; init; }
     public BigInteger Y { get; init; }
-    public Curve Curve { get; init; }
+    public Curve Curve { get; init; } = Curve.bitcoin_curve;
 
     public Point(){}
     public Point (Curve Curve, BigInteger X, BigInteger Y)
@@ -12,6 +12,36 @@ public record Point : IHashable
         this.Curve = Curve;
         this.X = X;
         this.Y = Y;
+    }
+
+    public static Point Decode(
+        string encoded
+    )
+    {
+        var chunks = encoded.Split(".");
+        var x = new BigInteger(
+            Convert.FromHexString(chunks[0]),
+            isUnsigned: true,
+            isBigEndian: true
+        );
+        var y = new BigInteger(
+            Convert.FromHexString(chunks[1]),
+            isUnsigned: true,
+            isBigEndian: true
+        );
+
+        return new Point
+        {
+            X = x,
+            Y = y
+        };
+    }
+
+    public string Encode()
+    {
+        return X.ToByteArray(32).ToHexString()
+               + "."
+               + Y.ToByteArray(32).ToHexString();
     }
 
     public bool IsMember()
@@ -52,7 +82,7 @@ public record Point : IHashable
             slope = (3 * x1.Pow(2) + a) * (2 * y1).ModInverse(p);
         x3 = (slope.Pow(2) - x1 - x2).Mod(p);
         y3 = (slope * (x1 - x3) - y1).Mod(p);
-        return new Point()
+        return new Point
         {
             Curve = P.Curve,
             X = x3,

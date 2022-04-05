@@ -51,17 +51,17 @@ public class KeyTests
     [Fact]
     public void BitcoinAddress1()
     {
-        var key = new PublicKey()
+        var key = new PublicKey
         {
             Generator = Generator.Default,
-            Point = new Point()
+            Point = new Point
             {
                 Curve = Curve.bitcoin_curve,
                 X = BigInteger.Parse("83998262154709529558614902604110599582969848537757180553516367057821848015989"),
                 Y = BigInteger.Parse("37676469766173670826348691885774454391218658108212372128812329274086400588247")
             }
         };
-        var addr = key.GetAddress("test", true);
+        var addr = key.GetAddress("test");
         var expected = "mnNcaVkC35ezZSgvn8fhXEa9QTHSUtPfzQ";
         Assert.Equal(expected, addr);
     }
@@ -71,7 +71,7 @@ public class KeyTests
     {
         var SecretKey = new PrivateKey(1);
         var PublicKey = SecretKey.GetPublicKey();
-        var addr = PublicKey.GetAddress("test", true);
+        var addr = PublicKey.GetAddress("test");
         var expected = "mrCDrCybB6J1vRfbwM5hemdJz73FwDBC8r";
         Assert.Equal(expected, addr);
     }
@@ -82,10 +82,10 @@ public class KeyTests
         var secretKey = new PrivateKey(BigInteger.Parse("22265090479312778178772228083027296664144"));
 
         var publicKey = secretKey.GetPublicKey();
-        var expectedPublicKey = new PublicKey()
+        var expectedPublicKey = new PublicKey
         {
             Generator = Generator.Default,
-            Point = new Point()
+            Point = new Point
             {
                 Curve = Curve.bitcoin_curve,
                 X = BigInteger.Parse("83998262154709529558614902604110599582969848537757180553516367057821848015989"),
@@ -94,7 +94,7 @@ public class KeyTests
         };
         Assert.Equal(expectedPublicKey, publicKey);
 
-        var address = publicKey.GetAddress("test", true);
+        var address = publicKey.GetAddress("test");
         var expectedAddress = "mnNcaVkC35ezZSgvn8fhXEa9QTHSUtPfzQ";
         Assert.Equal(expectedAddress, address);
     }
@@ -112,5 +112,15 @@ public class KeyTests
     {
         var pk = new PrivateKey();
         Assert.True(pk.IsValid);
+    }
+
+    [Fact]
+    public void PublicKeyEncode()
+    {
+        var privateKey = new PrivateKey();
+        var publicKey = privateKey.GetPublicKey();
+        var encoded = publicKey.Encode();
+        var decoded = PublicKey.Decode(encoded);
+        Assert.Equal(publicKey, decoded);
     }
 }

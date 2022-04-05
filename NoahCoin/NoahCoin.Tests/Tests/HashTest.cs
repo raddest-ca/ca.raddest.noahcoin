@@ -13,7 +13,7 @@ public class HashTest
     [Fact]
     public void CustomHash()
     {
-        var hash = new Hash()
+        var hash = new Hash
         {
             Value = new byte[] { 0x01 }
         };

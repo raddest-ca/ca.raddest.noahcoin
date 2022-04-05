@@ -14,14 +14,25 @@ public record Signature : IHashable
         Value = value;
     }
 
-    public Point Value {get; init;}
-    
+
+    public Point Value { get; init; }
+
     public BigInteger R => Value.X;
     public BigInteger S => Value.Y;
-    
+
     public Hash GetHash()
     {
         return Value.GetHash();
+    }
+
+    public string Encode()
+    {
+        return Value.Encode();
+    }
+
+    public static Signature Decode(string encoded)
+    {
+        return new Signature(Point.Decode(encoded));
     }
 
     public bool IsValid(
@@ -36,7 +47,7 @@ public record Signature : IHashable
         if (R < 1 && R > n - 1) return false;
         if (S < 1 && S > n - 1) return false;
         var s1 = S.ModInverse(n);
-        var RPrime = (z * s1) * G + (R * s1) * publicKey.Point;
+        var RPrime = z * s1 * G + R * s1 * publicKey.Point;
         if (RPrime.IsInfinity()) return false;
         var rPrime = RPrime.X;
         return rPrime == R;

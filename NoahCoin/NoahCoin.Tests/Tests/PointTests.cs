@@ -87,4 +87,13 @@ public class PointTests
         Point a = new Point(new Curve(17, 2, 3), 5, 11);
         Assert.Equal(a*12, 12*a);
     }
+
+    [Fact]
+    public void Encoding()
+    {
+        Point a = new Point(new Curve(17, 2, 3), 5, 11);
+        string enc = a.Encode();
+        Point b = Point.Decode(enc) with { Curve = a.Curve };
+        Assert.Equal(a,b);
+    }
 }

@@ -4,7 +4,7 @@ public record Generator
 {
     public Point Point { get; init; }
     public BigInteger Order { get; init; }
-    public static readonly Generator Default = new Generator()
+    public static readonly Generator Default = new Generator
     {
         Point = new Point(
             Curve.bitcoin_curve,
@@ -16,7 +16,7 @@ public record Generator
 
     public PublicKey GeneratePublicKey(PrivateKey pk)
     {
-        return new PublicKey()
+        return new PublicKey
         {
             Generator = this,
             Point = pk.Value * Point

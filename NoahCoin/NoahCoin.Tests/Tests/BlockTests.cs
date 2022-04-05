@@ -12,11 +12,7 @@ public class BlockTests
             Header = new()
             {
                 IsGenesisBlock = true,
-                Transactions = new HashPointer<Transaction>[] { new(new(){
-                    Sender = BigInteger.One,
-                    Receiver = new BigInteger(2),
-                    Amount = new BigInteger(25)
-                })},
+                Transactions = new HashPointer<Transaction>[] { new(new())},
             },
         };
         Block b = a with { Header = a.Header with { Transactions = new HashPointer<Transaction>[] { } } };
@@ -32,11 +28,7 @@ public class BlockTests
         {
             Header = new(){
                 IsGenesisBlock = true,
-                Transactions = new HashPointer<Transaction>[] { new(new (){
-                    Sender = BigInteger.One,
-                    Receiver = new BigInteger(2),
-                    Amount = new BigInteger(25)
-                })},
+                Transactions = new HashPointer<Transaction>[] { new(new ())},
             }
         };
         Assert.True(a.IsValid);

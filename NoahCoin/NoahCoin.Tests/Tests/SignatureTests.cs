@@ -19,4 +19,18 @@ public class SignatureTests
         Assert.False(modifiedSig.IsValid(publicKey, m));
 
     }
+
+    [Fact]
+    public void EncodeTest()
+    {
+        var privateKey = new PrivateKey();
+        var publicKey = privateKey.GetPublicKey();
+        var msg = IHashable.GetHash("howdy");
+        var sig = privateKey.GetSignature(msg);
+        var encoded = sig.Encode();
+        var decoded = Signature.Decode(encoded);
+        Assert.Equal(sig, decoded);
+        Assert.True(sig.IsValid(publicKey, msg));
+        Assert.True(decoded.IsValid(publicKey, msg));
+    }
 }
