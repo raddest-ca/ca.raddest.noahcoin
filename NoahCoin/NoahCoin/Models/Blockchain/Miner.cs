@@ -19,8 +19,7 @@ public class Miner
             Header = new()
             {
                 IsGenesisBlock = true,
-                Transactions =
-                    new HashPointer<Transaction>[] { new(new() { }) },
+                Transactions = new MerkelTree(),
             },
             Nonce = BigInteger.Zero,
         };

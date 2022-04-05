@@ -13,10 +13,28 @@ public class BlockTests
             Header = new()
             {
                 IsGenesisBlock = true,
-                Transactions = new HashPointer<Transaction>[] { new(new())},
+                Transactions = new()
             },
         };
-        Block b = a with { Header = a.Header with { Transactions = Array.Empty<HashPointer<Transaction>>() } };
+        Block b = a with
+        {
+            Header = a.Header with
+            {
+                Transactions = new MerkelTree().Append(
+                    new(new Transaction
+                    {
+                        Inputs = new[]
+                        {
+                            new TransactionInput(
+                                HashPointer<Transaction>
+                                    .GetNullPointer<Transaction>(),
+                                0
+                            )
+                        }
+                    })
+                )
+            }
+        };
         Block c = a with { Header = a.Header, Nonce = a.Nonce };
         Assert.NotEqual(a.GetHash(), b.GetHash());
         Assert.Equal(a.GetHash(), c.GetHash());

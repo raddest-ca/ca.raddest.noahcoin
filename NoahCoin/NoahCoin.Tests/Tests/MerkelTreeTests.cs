@@ -11,7 +11,7 @@ public class MerkelTreeTests
     public void EmptyTree()
     {
         var tree = new MerkelTree();
-        Assert.Equal(new Hash(), tree.GetHash());
+        Assert.Equal(new(), tree.GetHash());
     }
 
     [Fact]
@@ -19,7 +19,7 @@ public class MerkelTreeTests
     {
         var tree = new MerkelTree();
         var key = new PrivateKey(1);
-        tree = tree.Append(key);
+        tree = tree.Append(new(key));
         Assert.Equal(key.GetHash(), tree.GetHash());
     }
 
@@ -33,14 +33,14 @@ public class MerkelTreeTests
         for (i = 0; i < max; i++)
         {
             var key = new PrivateKey(i);
-            tree = tree.Append(key);
+            tree = tree.Append(new(key));
             keys.Add(key);
         }
 
         i = 0;
         foreach (var entry in tree)
         {
-            Assert.Equal(keys[i], entry);
+            Assert.Equal(keys[i], entry.Reference);
             i++;
         }
 

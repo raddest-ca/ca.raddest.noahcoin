@@ -3,63 +3,71 @@ using System.Net;
 
 namespace NoahCoin.Models.Datastructures;
 
-public record MerkelTree : IEnumerable<IHashable>, IHashable
+public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
 {
-    public HashPointer<IHashable>? Left { get; init; }
-    public HashPointer<IHashable>? Right { get; init; }
+    public HashPointer<IHashable> Left { get; init; } =
+        HashPointer<IHashable>.GetNullPointer<IHashable>();
+
+    public HashPointer<IHashable> Right { get; init; } =
+        HashPointer<IHashable>.GetNullPointer<IHashable>();
 
     public MerkelTree()
     {
     }
 
-    public MerkelTree(
-        IHashable? left,
-        IHashable? right
-    )
-    {
-        Left = left == null ? null : new(left);
-        Right = right == null ? null : new(right);
-    }
-
     public MerkelTree Append(
-        IHashable value
+        HashPointer<IHashable> value
     )
     {
-        IEnumerable<IHashable?> toJoin = (IEnumerable<IHashable?>) this.Concat(new []{value});
-        while (true)
+        IEnumerable<HashPointer<IHashable>> toJoin =
+            this.Concat(new[] { value }).Where(x => !x.IsNull);
+        List<MerkelTree> subtrees = new();
         {
-            List<MerkelTree> pairs = new();
-            var iter = toJoin.GetEnumerator();
-            IHashable? prev = null;
-            while (iter.MoveNext())
+            HashPointer<IHashable> prev = null;
+            foreach (var hashPointer in toJoin)
             {
-                if (prev == null) prev = iter.Current;
+                if (prev == null)
+                    prev = hashPointer;
                 else
                 {
-                    pairs.Add(new(prev, iter.Current));
+                    subtrees.Add(new() { Left = prev, Right = hashPointer });
                     prev = null;
                 }
             }
 
-            if (prev != null) pairs.Add(new (prev, null));
-            if (pairs.Count == 1) return pairs[0];
-            toJoin = pairs;
+            if (prev != null) subtrees.Add(new() { Left = prev });
+        }
+        while (subtrees.Count > 1)
+        {
+            List<MerkelTree> next = new();
+            MerkelTree prev = null;
+            foreach (var tree in subtrees)
+            {
+                if (prev == null)
+                    prev = tree;
+                else
+                {
+                    next.Add(new() { Left = new(prev), Right = new(tree) });
+                    prev = null;
+                }
+            }
+
+            if (prev != null) next.Add(new() { Left = new(prev) });
+            subtrees = next;
         }
 
-        // if (Left == null) return this with { Left = new(value)};
-        // if (Right == null) return this with { Right = new(value) };
-        // return new MerkelTree<T>();
+        return subtrees[0];
     }
 
     public Hash GetHash()
     {
-        if (Left == null && Right == null) return new();
-        if (Left == null) return Right!.GetHash();
-        if (Right == null) return Left!.GetHash();
+        if (Left.IsNull && Right.IsNull) return new();
+        if (Left.IsNull) return Right!.GetHash();
+        if (Right.IsNull) return Left!.GetHash();
         return IHashable.GetHash(Left, Right);
     }
 
-    public IEnumerator<IHashable> GetEnumerator()
+    public IEnumerator<HashPointer<IHashable>> GetEnumerator()
     {
         return new MerkelTreeEnumerator(this);
     }
@@ -68,12 +76,17 @@ public record MerkelTree : IEnumerable<IHashable>, IHashable
     {
         return GetEnumerator();
     }
+
+    public bool IsValid()
+    {
+        return true;
+    }
 }
 
-public class MerkelTreeEnumerator : IEnumerator<IHashable>
+public class MerkelTreeEnumerator : IEnumerator<HashPointer<IHashable>>
 {
     private readonly MerkelTree _tree;
-    private readonly List<HashPointer<IHashable>?> _toVisit = new();
+    private readonly List<HashPointer<IHashable>> _toVisit = new();
 
     public MerkelTreeEnumerator(
         MerkelTree tree
@@ -86,18 +99,18 @@ public class MerkelTreeEnumerator : IEnumerator<IHashable>
     public bool MoveNext()
     {
         if (!_toVisit.Any()) return false;
-        
+
         var visiting = _toVisit.Pop();
-        if (visiting == null) return MoveNext();
-        
+        if (visiting.IsNull) return MoveNext();
+
         if (visiting.Reference is MerkelTree tree)
         {
             _toVisit.Insert(0, tree.Right);
             _toVisit.Insert(0, tree.Left);
             return MoveNext();
         }
-        
-        Current = visiting.Reference;
+
+        Current = visiting;
         return true;
     }
 
@@ -108,7 +121,7 @@ public class MerkelTreeEnumerator : IEnumerator<IHashable>
         _toVisit.Add(_tree.Right);
     }
 
-    public IHashable Current { get; set; }
+    public HashPointer<IHashable> Current { get; set; }
 
     object IEnumerator.Current => Current;
 
