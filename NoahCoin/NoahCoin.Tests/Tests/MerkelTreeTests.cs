@@ -89,4 +89,30 @@ public class MerkelTreeTests
             Assert.Equal(i+1, tree.Count);
         }
     }
+
+    [Fact]
+    public void Membership()
+    {
+        var tree = new MerkelTree();
+        List<HashPointer<IHashable>> values = new();
+        int i;
+        for (i = 0; i < 50; i++)
+        {
+            HashPointer<IHashable> toAdd;
+            if (i == 3)
+                toAdd = new(IHashable.GetHash(30));
+            else
+                toAdd = new(IHashable.GetHash(i));
+            tree = tree.Append(toAdd);
+            values.Add(toAdd);
+        }
+        Assert.Equal(values[0], tree[0]);
+        Assert.False(tree.IsMember(3, new Hash()));
+        Assert.False(tree.IsMember(3, IHashable.GetHash(3)));
+        Assert.True(tree.IsMember(3, IHashable.GetHash(30)));
+        for (i = 0; i < 50; i++)
+        {
+            Assert.Equal(values[i], tree[i]);
+        }    
+    }
 }

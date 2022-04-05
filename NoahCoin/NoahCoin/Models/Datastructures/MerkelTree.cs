@@ -14,7 +14,7 @@ public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
     private readonly int _count = 0;
 
     public int Count => _count;
-    
+
     public MerkelTree()
     {
     }
@@ -58,7 +58,10 @@ public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
                     prev = tree;
                 else
                 {
-                    next.Add(new(prev.Count + tree.Count) { Left = new(prev), Right = new(tree) });
+                    next.Add(
+                        new(prev.Count + tree.Count)
+                            { Left = new(prev), Right = new(tree) }
+                    );
                     prev = null;
                 }
             }
@@ -70,12 +73,41 @@ public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
         return subtrees[0];
     }
 
+    public HashPointer<IHashable> this[
+        int index
+    ]
+    {
+        get
+        {
+            HashPointer<IHashable> layer = new(this);
+            while (layer.Reference is MerkelTree tree)
+            {
+                if (tree.Left.Reference is MerkelTree left)
+                {
+                    if (index < left.Count)
+                        layer = tree.Left;
+                    else
+                    {
+                        layer = tree.Right;
+                        index -= left.Count;
+                    }
+                }
+                else
+                {
+                    layer = index == 0 ? tree.Left : tree.Right;
+                }
+            }
+
+            return layer;
+        }
+    }
+
     public bool IsMember(
         int index,
         Hash hash
     )
     {
-        return false;
+        return this[index].GetHash() == hash;
     }
 
     public Hash GetHash()
