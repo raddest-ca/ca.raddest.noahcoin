@@ -19,8 +19,6 @@ public record Hash : IHashable
         Value = value;
     }
 
-    public Hash(BigInteger value) => Value = IHashable.GetHash(value).Value;
-
     public override int GetHashCode()
     {
         return (int) IntegerValue.Mod(Int32.MaxValue);

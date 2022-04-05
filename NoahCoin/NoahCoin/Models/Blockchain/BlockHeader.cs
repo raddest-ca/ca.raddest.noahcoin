@@ -10,7 +10,7 @@ public record BlockHeader : IHashable
     public bool IsGenesisBlock { get; init; } = false;
 
     public bool IsValid =>
-        (IsGenesisBlock || PreviousBlock.IsValid) && Transactions.IsValid();
+        (IsGenesisBlock || PreviousBlock.IsValid) && Transactions.IsValid;
 
 
     public Hash GetHash() =>

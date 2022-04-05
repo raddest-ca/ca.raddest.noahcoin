@@ -48,4 +48,32 @@ public class MerkelTreeTests
         Assert.Equal(max, i);
         Assert.Equal(max, tree.Count());
     }
+
+    [Fact]
+    public void Validate()
+    {
+        HashPointer<IHashable> left = new(new Hash());
+        HashPointer<IHashable> right = new(new Hash());
+        MerkelTree tree = new()
+        {
+            Left = left,
+            Right = right
+        };
+
+        Assert.True(tree.IsValid);
+
+        // change hash value to no longer match reference
+        var badTree = tree with
+        {
+            Left = left with { Hash = IHashable.GetHash(1) }
+        };
+        Assert.False(badTree.IsValid);
+        
+        // change reference to no longer match hash value
+        badTree = tree with
+        {
+            Left = left with { Reference = IHashable.GetHash(1) }
+        };
+        Assert.False(badTree.IsValid);
+    }
 }
