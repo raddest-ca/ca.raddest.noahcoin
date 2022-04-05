@@ -43,7 +43,9 @@ public class MerkelTreeTests
             Assert.Equal(keys[i], entry.Reference);
             i++;
         }
-
-        // Assert.Equal(max, tree.Count());
+        Assert.Equal(keys.Count, i);
+        Assert.Equal(keys.Count, max);
+        Assert.Equal(max, i);
+        Assert.Equal(max, tree.Count());
     }
 }
