@@ -8,6 +8,7 @@ public record HashPointer<T> : IHashable where T: IHashable
     public Hash Hash {get; init;}
 
     public bool IsValid => !IsNull && Reference.GetHash().Equals(Hash);
+    public bool IsValidOrNull => IsNull || IsValid;
     public bool IsNull => Reference == null;
     public HashPointer(){}
     public HashPointer(T reference)

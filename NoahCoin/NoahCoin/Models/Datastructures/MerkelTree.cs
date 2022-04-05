@@ -77,7 +77,7 @@ public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
         return GetEnumerator();
     }
 
-    public bool IsValid => this.All(x => x.IsValid);
+    public bool IsValid => this.All(x => x.IsValidOrNull);
 }
 
 public class MerkelTreeEnumerator : IEnumerator<HashPointer<IHashable>>

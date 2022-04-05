@@ -53,7 +53,7 @@ public class MerkelTreeTests
     public void Validate()
     {
         HashPointer<IHashable> left = new(new Hash());
-        HashPointer<IHashable> right = new(new Hash());
+        HashPointer<IHashable> right = new(){Hash = new Hash(new byte[]{0x00, 0x10})};
         MerkelTree tree = new()
         {
             Left = left,
