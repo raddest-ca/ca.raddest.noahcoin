@@ -8,26 +8,31 @@ public class ScriptEvaluatorTests
         var privateKey = new PrivateKey(1);
         var publicKey = privateKey.GetPublicKey();
         var address = publicKey.GetAddress();
-        var tx = new Transaction()
+        var previousTx = new HashPointer<Transaction>
+            { Hash = IHashable.GetHash(0) };
+
+        var tx = new Transaction
         {
-            Outputs = new[] {new TransactionOutput(25, address)}
+            Outputs = new[] { new TransactionOutput(25, address) },
+            Inputs = new[] { new TransactionInput(previousTx, 0) }
         };
+
         var sigContent = tx.GetPreSignedHash();
         var sig = privateKey.GetSignature(sigContent);
-        var txInput = new TransactionInput(
-            new HashPointer<Transaction>
-            {
-                Hash = IHashable.GetHash(0)
-            },
-            0,
-            sig,
-            publicKey
-        );
-        tx = tx with
+
+        var txNew = tx with
         {
-            Inputs = new[] { txInput }
+            Inputs = new[]
+            {
+                tx.Inputs[0] with
+                {
+                    Script = TransactionInput.GetScript(sig, publicKey)
+                }
+            }
         };
-        var runner = new ScriptEvaluator(tx);
+        
+        Assert.Equal(tx.GetPreSignedHash(), txNew.GetPreSignedHash());
+        var runner = new ScriptEvaluator(txNew);
         Assert.True(runner.TryValidate());
     }
 }
