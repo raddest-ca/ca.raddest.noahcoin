@@ -50,9 +50,9 @@ public record Transaction : IHashable
     {
         if (!new ScriptEvaluator(bc, this).TryValidate()) return false;
         if (!Inputs.All(input => input.IsValid(bc))) return false;
-        var totalOutputValue = GetInputValueTotal(bc);
-        var totalInputValue = GetOutputValueTotal();
-        return totalOutputValue <= totalInputValue;
+        var totalOutputValue = GetOutputValueTotal();
+        var totalInputValue = GetInputValueTotal(bc);
+        return Inputs.Length == 0 || totalOutputValue <= totalInputValue;
     }
 
     public int GetInputValueTotal(
