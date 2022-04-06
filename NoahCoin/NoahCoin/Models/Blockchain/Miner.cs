@@ -5,7 +5,7 @@ namespace NoahCoin.Models.Blockchain;
 public class Miner
 {
     public Block Block { get; set; }
-    public int Difficulty { get; set; }
+    public int Difficulty { get; set; } = 1;
 
     public Block MineBlock()
     {
