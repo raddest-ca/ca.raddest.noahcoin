@@ -51,7 +51,7 @@ public record Transaction : IHashable
         if (!new ScriptEvaluator(bc, this).TryValidate()) return false;
         if (!Inputs.All(input => input.IsValid(bc))) return false;
         var totalOutputValue = GetInputValueTotal(bc);
-        var totalInputValue = GetOutputValueTotal(bc);
+        var totalInputValue = GetOutputValueTotal();
         return totalOutputValue <= totalInputValue;
     }
 
@@ -64,9 +64,8 @@ public record Transaction : IHashable
         )
         .Sum();
 
-    public int GetOutputValueTotal(
-        BlockChain bc
-    ) => Outputs.Select(output => output.Value).Sum();
+    public int GetOutputValueTotal() =>
+        Outputs.Select(output => output.Value).Sum();
 
     public static Transaction GetRewardTransaction(
         string address,
@@ -74,10 +73,7 @@ public record Transaction : IHashable
     ) =>
         new()
         {
-            Inputs = new[]
-            {
-                new TransactionInput()
-            },
+            Inputs = new TransactionInput[] { },
             Outputs = new[]
             {
                 new TransactionOutput(reward, address)

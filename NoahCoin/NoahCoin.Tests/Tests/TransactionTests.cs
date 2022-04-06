@@ -60,4 +60,13 @@ public class TransactionTests
         var tx = new Transaction();
         Assert.True(tx.IsValid(new BlockChain()));
     }
+
+    [Fact]
+    public void RewardTx()
+    {
+        var bc = new BlockChain();
+        var tx = Transaction.GetRewardTransaction("abc", 25);
+        bc = bc.Append(new(new Block().Append(new(tx))));
+        Assert.True(tx.IsValid(bc));
+    }
 }
