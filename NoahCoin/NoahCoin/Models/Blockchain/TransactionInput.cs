@@ -2,32 +2,19 @@
 
 public record TransactionInput : IHashable
 {
-    public HashPointer<Transaction> PreviousTransactionHash { get; init; }
-    public int PreviousTransactionOutputIndex { get; init; }
-    public string Script { get; init; }
+    public TransactionReference PreviousReference { get; init; } = new();
+    public int PreviousOutputIndex { get; init; } = -1;
+    public string Script { get; init; } = "";
 
-    public TransactionInput(
-        HashPointer<Transaction> previousTransactionHash,
-        int previousTransactionOutputIndex
-    )
+    public TransactionInput()
     {
-        PreviousTransactionHash = previousTransactionHash;
-        PreviousTransactionOutputIndex = previousTransactionOutputIndex;
-        Script = ""; // for signing
-    }
-    public TransactionInput(
-        HashPointer<Transaction> previousTransactionHash,
-        int previousTransactionOutputIndex,
-        Signature signature,
-        PublicKey publicKey
-    )
-    {
-        PreviousTransactionHash = previousTransactionHash;
-        PreviousTransactionOutputIndex = previousTransactionOutputIndex;
-        Script = GetScript(signature, publicKey);
     }
 
-    public static string GetScript(
+    public string? GetPreviousScript(
+        BlockChain bc
+    ) => PreviousReference.GetScript(bc, PreviousOutputIndex);
+
+    public static string GetClaimScript(
         Signature signature,
         PublicKey publicKey
     ) =>
@@ -37,9 +24,15 @@ public record TransactionInput : IHashable
 ";
 
     public Hash GetHash() =>
-        IHashable.GetHash(
-            PreviousTransactionHash,
-            IHashable.GetHash(PreviousTransactionOutputIndex),
-            IHashable.GetHash(Script)
-        );
+        IHashable.GetHash(PreviousReference, IHashable.GetHash(Script));
+
+    public bool IsValid(
+        BlockChain bc
+    )
+    {
+        var tx = PreviousReference.GetTransaction(bc);
+        if (tx == null) return false;
+        return PreviousOutputIndex >= 0
+               && PreviousOutputIndex < tx.Outputs.Length;
+    }
 }

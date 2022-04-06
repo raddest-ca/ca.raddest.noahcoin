@@ -6,10 +6,10 @@ namespace NoahCoin.Models.Datastructures;
 public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
 {
     public HashPointer<IHashable> Left { get; init; } =
-        HashPointer<IHashable>.GetNullPointer<IHashable>();
+        HashPointer<IHashable>.GetNullPointer();
 
     public HashPointer<IHashable> Right { get; init; } =
-        HashPointer<IHashable>.GetNullPointer<IHashable>();
+        HashPointer<IHashable>.GetNullPointer();
 
     private readonly int _count = 0;
 
@@ -30,6 +30,11 @@ public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
         HashPointer<IHashable> value
     )
     {
+        if (value == null)
+            throw new ArgumentException(
+                "Append argument can't be null.",
+                nameof(value)
+            );
         IEnumerable<HashPointer<IHashable>> toJoin =
             this.Concat(new[] { value }).Where(x => !x.IsNull);
         List<MerkelTree> subtrees = new();
@@ -128,7 +133,7 @@ public record MerkelTree : IEnumerable<HashPointer<IHashable>>, IHashable
         return GetEnumerator();
     }
 
-    public bool IsValid => this.All(x => x.IsValidOrNull);
+    public bool IsValid => this.All(x => x.IsNullOrValid);
 }
 
 public class MerkelTreeEnumerator : IEnumerator<HashPointer<IHashable>>

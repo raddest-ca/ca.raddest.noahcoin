@@ -4,17 +4,33 @@ namespace NoahCoin.Models.Blockchain;
 
 public record BlockHeader : IHashable
 {
-    public HashPointer<Block> PreviousBlock { get; init; }
-    public MerkelTree Transactions { get; init; }
+    public HashPointer<Block> PreviousBlock { get; init; } =
+        HashPointer<Block>.GetNullPointer();
 
-    public bool IsGenesisBlock { get; init; } = false;
+    public MerkelTree Transactions { get; init; } = new();
 
     public bool IsValid =>
-        (IsGenesisBlock || PreviousBlock.IsValid) && Transactions.IsValid;
+        PreviousBlock.IsNullOrValid && Transactions.IsValid;
 
+    public Transaction? GetTransaction(
+        int index,
+        Hash txHash
+    )
+    {
+        if (Transactions[index].Reference is not Transaction tx) return null;
+        return tx.GetHash() == txHash ? tx : null;
+    }
 
     public Hash GetHash() =>
-        IsGenesisBlock
+        PreviousBlock.IsNull
             ? Transactions.GetHash()
             : IHashable.GetHash(Transactions.GetHash(), PreviousBlock);
+
+    public BlockHeader Append(
+        HashPointer<Transaction> tx
+    ) =>
+        this with
+        {
+            Transactions = Transactions.Append(new(tx.Reference))
+        };
 }

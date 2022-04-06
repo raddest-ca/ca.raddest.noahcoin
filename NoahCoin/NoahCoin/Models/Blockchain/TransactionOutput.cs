@@ -11,18 +11,22 @@ public record TransactionOutput : IHashable
 
     public TransactionOutput(
         int amount,
-        string publicKeyHash
+        string address
     )
     {
         Value = amount;
-        Script = $@"
+        Script = GetScriptPayableTo(address);
+    }
+
+    public static string GetScriptPayableTo(
+        string address
+    ) => $@"
 OP_DUP
 OP_GETADDRESS
-{publicKeyHash}
+{address}
 OP_EQUALVERIFY
 OP_CHECKSIG
 ";
-    }
 
     public Hash GetHash() => IHashable.GetHash(
         IHashable.GetHash(Value),

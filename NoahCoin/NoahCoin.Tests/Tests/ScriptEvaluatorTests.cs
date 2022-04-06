@@ -1,4 +1,6 @@
-﻿namespace NoahCoin.Tests;
+﻿using System.Linq;
+
+namespace NoahCoin.Tests;
 
 public class ScriptEvaluatorTests
 {
@@ -8,31 +10,45 @@ public class ScriptEvaluatorTests
         var privateKey = new PrivateKey(1);
         var publicKey = privateKey.GetPublicKey();
         var address = publicKey.GetAddress();
-        var previousTx = new HashPointer<Transaction>
-            { Hash = IHashable.GetHash(0) };
+        var bc = new BlockChain();
 
         var tx = new Transaction
         {
             Outputs = new[] { new TransactionOutput(25, address) },
-            Inputs = new[] { new TransactionInput(previousTx, 0) }
+            Inputs = new[] { new TransactionInput() }
         };
 
-        var sigContent = tx.GetPreSignedHash();
-        var sig = privateKey.GetSignature(sigContent);
 
-        var txNew = tx with
+        bc = bc.Append(new(new Block().Append(new(tx))));
+
+        tx = new Transaction
         {
             Inputs = new[]
             {
-                tx.Inputs[0] with
+                new TransactionInput
                 {
-                    Script = TransactionInput.GetScript(sig, publicKey)
+                    PreviousReference = new TransactionReference
+                    {
+                        Block = bc.First(),
+                        TransactionIndex = 0,
+                        Transaction = bc.First().Reference.First()
+                    },
+                    PreviousOutputIndex = 0
                 }
+            },
+            Outputs = new[]
+            {
+                new TransactionOutput(25, address)
             }
         };
-        
-        Assert.Equal(tx.GetPreSignedHash(), txNew.GetPreSignedHash());
-        var runner = new ScriptEvaluator(txNew);
+        tx = tx.AddSignature(privateKey, publicKey, 0);
+
+        bc = bc.Append(new(new Block().Append(new(tx))));
+
+        var runner = new ScriptEvaluator(
+            bc,
+            bc.Head.Reference.First().Reference
+        );
         Assert.True(runner.TryValidate());
     }
 }

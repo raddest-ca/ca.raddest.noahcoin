@@ -4,36 +4,18 @@ namespace NoahCoin.Models.Blockchain;
 
 public class Miner
 {
-    public int Difficulty { get; set; } = 1;
-    public BigInteger Owner { get; init; }
-    public Block ActiveBlock { get; set; }
-
-    public Miner(
-        BigInteger owner,
-        BigInteger previousBlockId
-    )
-    {
-        Owner = owner;
-        ActiveBlock = new Block
-        {
-            Header = new()
-            {
-                IsGenesisBlock = true,
-                Transactions = new MerkelTree(),
-            },
-            Nonce = BigInteger.Zero,
-        };
-    }
+    public Block Block { get; set; }
+    public int Difficulty { get; set; }
 
     public Block MineBlock()
     {
-        using var Hasher = SHA256.Create();
-        while (!IsValid(ActiveBlock.GetHash()))
+        using var hasher = SHA256.Create();
+        while (!IsValid(Block.GetHash()))
         {
-            ActiveBlock = ActiveBlock with { Nonce = ActiveBlock.Nonce + 1 };
+            Block = Block with { Nonce = Block.Nonce + 1 };
         }
 
-        return ActiveBlock;
+        return Block;
     }
 
     public bool IsValid(

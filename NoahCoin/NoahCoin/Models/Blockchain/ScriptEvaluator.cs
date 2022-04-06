@@ -2,8 +2,8 @@
 
 public record ScriptEvaluator
 {
-    public string Script { get; }
     public Transaction Transaction { get; }
+    public BlockChain BlockChain { get; }
 
     private readonly Stack<string> _stack = new();
 
@@ -11,44 +11,56 @@ public record ScriptEvaluator
 
     public bool TryValidate()
     {
-        var lines = Script.Replace(Environment.NewLine, " ")
-            .Replace("\n", " ")
-            .Split(" ", StringSplitOptions.RemoveEmptyEntries);
-        foreach (var line in lines)
+        try
         {
-            if (_handlers.ContainsKey(line))
-                try
-                {
-                    if (!_handlers[line].Invoke()) return false;
-                }
-                catch (Exception _)
-                {
-                    return false;
-                }
-            else _stack.Push(line);
+            return Validate();
         }
-
-        return !_stack.Any();
+        catch (Exception e)
+        {
+            throw;
+            // return false;
+        }
     }
 
-    public ScriptEvaluator(
-        Transaction transaction
-    )
+    public bool Validate()
     {
-        Transaction = transaction;
-        Script = transaction.Inputs.Zip(
-                transaction.Outputs,
-                (
-                    a,
-                    b
-                ) => a.Script + "\n" + b.Script
+        var script = Transaction.Inputs.Select(
+                input =>
+                    input.Script + "\n" + input.GetPreviousScript(BlockChain)
+                    ?? ""
             )
+            .Append("")
             .Aggregate(
                 (
                     a,
                     b
                 ) => a + "\n" + b
             );
+        var lines = script.Replace(Environment.NewLine, " ")
+            .Replace("\n", " ")
+            .Split(" ", StringSplitOptions.RemoveEmptyEntries);
+        foreach (var line in lines)
+        {
+            if (_handlers.ContainsKey(line))
+            {
+                if (!_handlers[line].Invoke()) return false;
+            }
+            else
+            {
+                _stack.Push(line);
+            }
+        }
+
+        return !_stack.Any();
+    }
+
+    public ScriptEvaluator(
+        BlockChain bc,
+        Transaction transaction
+    )
+    {
+        Transaction = transaction;
+        BlockChain = bc;
         _handlers.Add(nameof(OP_DUP), OP_DUP);
         _handlers.Add(nameof(OP_GETADDRESS), OP_GETADDRESS);
         _handlers.Add(nameof(OP_EQUALVERIFY), OP_EQUALVERIFY);
