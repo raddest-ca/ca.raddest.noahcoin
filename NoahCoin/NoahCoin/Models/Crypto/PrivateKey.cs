@@ -50,7 +50,6 @@ public record PrivateKey: IHashable
         {
             var k = CryptoUtil.GetSecureRandomNumber(n) + 1;
             var xy = k * Generator.Point;
-            // var r = xy.X.Mod(n);
             var r = xy.X;
             if (r == 0) continue;
             var s = (k.ModInverse(n) * (z + Value * r)).Mod(n);

@@ -51,11 +51,5 @@ public record Signature : IHashable
         if (RPrime.IsInfinity()) return false;
         var rPrime = RPrime.X;
         return rPrime == R;
-        // var S1 = S.ModInverse(n);
-        // var u1 = (z * S1);
-        // var u2 = (R * S1);
-        // var xy = u1 * publicKey.Generator.Point + u2 * publicKey.Point;
-        // if (xy.IsInfinity()) return false;
-        // return R == xy.X.Mod(n);
     }
 }
