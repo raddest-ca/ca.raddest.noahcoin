@@ -15,7 +15,7 @@ public record ScriptEvaluator
         {
             return Validate();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw;
             // return false;
